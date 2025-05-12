@@ -1,0 +1,28 @@
+
+@startuml
+
+!theme materia-outline
+
+left to right direction
+
+class Bitmap {
+    - data: u32
+    --
+    + new() : Bitmap
+    + set(index: usize) : void
+    + clear(index: usize) : void
+    + get(index: usize) : bool
+    + find_first_unset() : Option<usize>
+}
+
+class IrqAllocator {
+    - bitmap: Bitmap
+    --
+    + new() : IrqAllocator
+    + alloc() : Option<usize>
+    + free(index: usize) : void
+}
+
+IrqAllocator --> Bitmap : uses
+
+@enduml

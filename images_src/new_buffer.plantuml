@@ -1,0 +1,60 @@
+@startuml
+!theme materia-outline
+skinparam class {
+  FontColor white
+  FontSize 16
+}
+left to right direction
+class IPCItem {
+  +vec: u32
+  +cid: CoroutineId
+  +msg_info: u32
+  +extend_msg: [u16; 16]
+  +new(): IPCItem
+  +from(vec: u32, cid: CoroutineId, msg: u32): IPCItem
+}
+
+class ItemsIdxQueue {
+  -buffer: SafeRingBuffer<usize, MAX_ITEM_NUM>
+  +new(): ItemsIdxQueue
+  +write_free_idx(idx: usize): Result<(), ()>
+  +get_first_idx(): Option<usize>
+}
+
+class NewBuffer {
+  +recv_req_status: AtomicBool
+  +recv_reply_status: AtomicBool
+  +req_items: ItemsIdxQueue
+  +res_items: ItemsIdxQueue 
+  +data: [IPCItem; 4096]
+  +idx_allocator: IndexAllocator<4096>
+  +new(): NewBuffer
+  +get_ptr(): usize
+  +from_ptr(ptr: usize): &mut NewBuffer
+}
+
+
+' ---------------------- 通用数据结构 ----------------------
+class "IndexAllocator" {
+  -bitmap: [u8; (SIZE + 7) / 8]
+  +new(): IndexAllocator
+  +allocate(): Option<usize>
+  +release(index: usize)
+}
+
+class "SafeRingBuffer" {
+  -data: [T; SIZE]
+  +start: usize
+  +end: usize
+  +count: AtomicUsize
+  +new(): SafeRingBuffer
+  +push_safe(item: &T): Result<(), ()>
+  +pop_safe(): Option<T>
+}
+
+' ---------------------- 关系连接 ----------------------
+ItemsIdxQueue --> SafeRingBuffer
+NewBuffer --> ItemsIdxQueue
+NewBuffer --> IPCItem
+NewBuffer --> IndexAllocator
+@enduml

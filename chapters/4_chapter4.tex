@@ -1,0 +1,147 @@
+\chapter{实现细节}
+
+
+\section{硬件地址映射与接口层封装}
+
+\subsection{中断向量分配器实现}
+
+为实现3.3.4章节中的中断向量复用，本设计在硬件接口层实现了一个中断向量分配器。
+
+由于硬件中存储了协程id与中断向量号的对应关系，因此软件接口只管理每个中断向量号的使用情况。本设计中，分配器基于32位位图实现。该位图提供基本的方法，如设置位、清除位和查询首个零位。
+
+其中为提高性能，查询首个零位使用Rust内建方法 \verb|trailing_zeros|。该方法返回最低有效零位的索引，在risc-v中可以被映射成CLZ等硬件指令。具体算法如下：
+
+% 查找第一个空闲位的算法
+
+\begin{algorithm}
+  \caption{查找位图中首个零位}
+  \label{alg:find_first_unset}
+  \begin{algorithmic}
+    \Function{find\_first\_unset}{bitmap: 32-bit integer}
+    \State $inverted \gets \sim bitmap$
+    \If{$inverted = 0$}
+    \State \Return None
+    \Else
+    \State \Return trailing\_zeros($\textit{inverted}$)
+    \EndIf
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
+分配器基于上述的位图结构进行封装，提供了初始化、分配、释放接口，结构示意图如下所示：
+
+% 中断向量分配器类图
+\begin{figure}[htbp]
+  \centering
+  \includesvg[inkscapelatex=false,width=0.8\textwidth]{images/IrqAllocator}
+  \caption{中断向量分配器类图}\label{中断向量分配器类图}
+\end{figure}
+
+
+\subsection{硬件队列封装}
+
+由于内核和用户态的地址空间存在差异，因此分别在用户态和内核态的接口层对\texttt{taic\_driver}进行了不同的封装。
+
+内核中接口层首先定义了TAIC的寄存器物理地址基址、本地队列数量、内核线程id等常量。然后，使用\texttt{lazy\_static}宏声明了一个内核中全局唯一的本地队列\texttt{LOCAL\_QUEUE}。该队列使用常量参数调用\texttt{taic\_driver}中\texttt{alloc\_lq}的方法分配。
+
+接口层提供\texttt{get\_lq}方法返回\texttt{LOCAL\_QUEUE}的Arc智能指针，用于异步运行时就绪队列的初始化。
+
+接口层封装了发送者和接收者的注册逻辑。
+
+其中\texttt{register\_sender}用于将内核的队列的注册成为另一个全局队列的消息发送方。该方法直接调用\texttt{LOCAL\_QUEUE}中的\texttt{register\_sender}方法，并固定\texttt{os\_id}参数为常量。
+
+其中\texttt{register\_receiver}用于将内核的队列的注册成为另一个全局队列的消息接受方。该方法将设置了两个布尔变量：preempt与reusable分别表示该次注册是否抢占之前的注册以及是否可循环使用。接收方 ID、可抢占性与可复用性被按位编码为一个 \texttt{handler} 值，并传递给 \texttt{LOCAL\_QUEUE} 的 \texttt{register\_receiver} 方法完成注册。
+
+接口层还提供\texttt{send\_signal}方法，用于向其他队列发送信号，通过中断向量唤醒对方队列中的协程。
+
+用户态的接口层中，使用\texttt{\#\[thread\_local\]}宏定义了线程局部变量\texttt{LQ\_MANAGER}。该变量作为硬件资源的全局管理实例，整合了中断向量分配器以及全局队列。用户态的接口中使用\texttt{LQ\_MANAGER}中的队列代替全局队列，实现了硬件资源的线程隔离。
+
+\section{缓冲区优化}
+
+\subsection{IPC消息字段修改}
+
+为了在通信时附带协程所申请的中断向量信息，本设计在\texttt{IPC\_Item}中新增了vec字段用于指示发送消息的协程的中断向量。若该字段为0，则表明该协程无中断向量，需通过\texttt{dispatcher}协程唤醒。
+
+% ipcitem位域图
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{images/ipc_item.png}
+  \caption{ipcitem结构}\label{ipc_item结构}
+\end{figure}
+
+\subsection{环形队列结构优化}
+
+依据\ref{sec:buffer}中的设计，缓冲区实现如图\ref{缓冲区类图}所示。
+
+\begin{figure}[htbp]
+  \centering
+  \includesvg[inkscapelatex=false,width=\textwidth]{images/newbuffer}
+  \caption{缓冲区类图}\label{缓冲区类图}
+\end{figure}
+
+缓冲区中\texttt{data}为数据区，由长度为4096的\texttt{ipc\_item}数组实现，用于存储调用时的传递消息。
+
+\texttt{req\_items}和\texttt{res\_items}分别为请求消息与回复消息的索引队列，两者均采用\texttt{ItemsIdxQueue}数据结构实现。\texttt{ItemsIdxQueue}基于\texttt{SafeRingBuffer}封装，实现了一个线程安全的环形队列，提供了入队\texttt{write\_free\_idx}和出队\texttt{get\_first\_idx}两个基础方法。
+\texttt{SafeRingBuffer}是一个无锁环形缓冲区，其内部使用原子变量\texttt{count}记录缓冲区中有效元素的数量，以此保证安全的读写。
+
+\texttt{recv\_req\_status}和\texttt{recv\_reply\_status}为两个布尔类型的原子变量，分别表示接受请求的协程的当前状态与接受回复的\texttt{dispatcher}协程的当前状态。这两个状态标志减少了唤醒的次数，避免了重复调度。
+
+\texttt{idx\_allocator}为数据区存储空间的索引分配器，负责管理数据区索引号的分配与回收，其内部同样使用位图实现。
+
+缓冲区索引号的分配仅由用户态线程发起，而内核中的处理协程始终使用相同的索引号进行回复。因此，缓冲区的索引号总是由同一线程进行分配，具有天然的线程安全性。同时，两个环形队列的通过原子变量实现了并发访问控制，整个缓冲区在多线程环境下可实现无锁并发访问。该设计降低了因分配器引入导致的性能开销，使分配回收操作在极短的时间内即可完成，确保了高并发场景下的稳定性与效率。
+
+\section{执行器硬件适配}
+
+为了使异步运行时能够调用硬件能力，本设计对内核中异步运行时的执行器\texttt{Executor}中部分数据结构与方法进行了重写。
+
+因为缓冲区的逻辑优化，已不再需要进行消息转发，因此本设计删除了\texttt{immediate\_value}变量，并将原有的就绪队列改为taic中的本地队列的Arc引用\texttt{Arc<LocalQueue>}。在异步运行时初始化时，会调用下层的接口层代码，申请一个本地队列，并将其引用传给执行器完成就绪队列的初始化。
+
+\texttt{spawn}为执行器的协程生成方法。在该方法中，\texttt{Executor}使用taic提供的\texttt{task\_enqueue}方法将生成的协程加入就绪队列。因为taic句柄的第一位和第二位用作重复注册和抢占的标志位，因此调用该方法时需要协程id左移2位。
+
+\texttt{fetch}为执行器从就绪队列中调度协程执行的方法。在该方法中使用taic提供的\texttt{task\_dequeue}方法取出就绪队列中的就绪协程。
+
+
+\section{异步系统调用注册机制}
+
+为实现上述修改，本设计修改了原有的异步系统调用注册相关代码，删除了用户态中断的部分逻辑，并修改了协程生成的相关逻辑。
+
+\section{客户端发起}
+
+\texttt{seL4\_call\_with\_item}为发起异步系统调用的关键函数，该函数会调用通知对象的send能力，对系统中处理异步系统调用的端点发送消息，并等待reply回复。该方法依据传入的消息参数，将消息写入缓冲区，唤醒对应的协程并阻塞自身等待回复。
+
+\begin{algorithm}
+\caption{\texttt{sel4\_call\_with\_item(recv, vec, item)}}
+\begin{algorithmic}[0]  % 关闭行号
+\State buffer $\gets$ try get mutable buffer from \texttt{SENDER\_MAP[*recv]}
+\If{buffer is None}
+    \State \Return \texttt{Err("Failed to get service buffer")} \Comment 获取失败
+\EndIf
+
+\State idx $\gets$ buffer.idx\_allocator.allocate()
+\If{idx is None}
+    \State \Return \texttt{Err("Failed to allocate index in buffer")} \Comment 索引分配失败
+\EndIf
+
+\State buffer.data[idx] $\gets$ *item
+\If{buffer.req\_items.write\_free\_idx(idx) is Err}
+    \State \Return \texttt{Err("Failed to write free index")} \Comment 写入请求队列失败
+\EndIf
+
+\If{buffer.recv\_req\_status.load() == false}
+    \State buffer.recv\_req\_status.store(true)
+    \State send\_signal(*recv, vec) \Comment 唤醒接收方
+    \State \texttt{TEST\_TAIC\_SEND\_SIGNAL += 1}
+\EndIf
+
+\State yield\_now().await \Comment 阻塞等待响应
+\State buffer.idx\_allocator.release(idx) \Comment 释放索引
+\State \Return \texttt{Ok(buffer.data[idx])}
+\end{algorithmic}
+\end{algorithm}
+
+\section{服务端处理}
+
+
+介绍用户态中，对等函数的适配修改
+
+\section{本章小结}
