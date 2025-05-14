@@ -1,110 +1,56 @@
-%%
-% The BIThesis Template for Bachelor Graduation Thesis
-%
-% 北京理工大学毕业设计（论文）第一章节 —— 使用 XeLaTeX 编译
-%
-% Copyright 2020-2023 BITNP
-%
-% This work may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either version 1.3
-% of this license or (at your option) any later version.
-% The latest version of this license is in
-%   https://www.latex-project.org/lppl.txt
-% and version 1.3 or later is part of all distributions of LaTeX
-% version 2005/12/01 or later.
-%
-% This work has the LPPL maintenance status `maintained'.
-%
-% The Current Maintainer of this work is Feng Kaiyu.
-%
-% 第一章节
+\chapter{绪论}
 
-\chapter{一级题目}
+\section{研究背景及意义}
 
-\section{二级题目}
-% 这里插入一个参考文献，仅作参考
+\subsection{选题背景}
 
-\subsection{三级题目}
+当今计算领域对操作系统的性能、安全性和可靠性要求日益严苛，微内核技术因其固有的优势而备受关注。其中，seL4 微内核作为目前最先进的微内核之一，已被广泛应用于安全关键领域。然而，seL4 的同步系统调用和 IPC 会产生大量的特权级切换，且无法充分利用多核的性能。虽然微内核对异步通知有一定的支持，但仍需要内核进行转发，其中的特权级切换开销在某些平台和场景下将造成不可忽视的开销。
 
-正文……\parencite{yuFeiJiZongTiDuoXueKeSheJiYouHuaDeXianZhuangYuFaZhanFangXiang2008}……\cite{Hajela2012Application}
+为了进一步提高系统性能和效率, ReL4 项目使用 rust 语言重写的 seL4 微内核，基于用户态中断技术改造 seL4 的通知机制，设计了无需陷入内核的异步系统调用和异步 IPC 框架，在提升用户态并发度的同时，减少特权级的切换次数。而 ReL4 项目中，异步 IPC 的引⼊造成了额外的运⾏时开销，导致异步 IPC 在低并发的场景下性能显著低于同步 IPC。
 
-\textcolor{blue}{正文部分：宋体、小四；正文行距：22磅；间距段前段后均为0行。阅后删除此段。}
+\subsection{研究目的}
 
-\textcolor{blue}{图、表居中，图注标在图下方，表头标在表上方，宋体、五号、居中，1.25倍行距，间距段前段后均为0行，图表与上下文之间各空一行。阅后删除此段。}
+本研究旨在针对 ReL4 项目中异步进程间通信的性能瓶颈问题，提出并实施了一种创新性的解决方案。该方案通过利用硬件资源，部分替代传统的异步调度器功能，对异步运行时进行硬件层面的加速，以期显著提升异步 IPC 的性能表现。
 
-\textcolor{blue}{\underline{\underline{图-示例：（阅后删除此段）}}}
+\subsection{研究意义}
 
+本研究旨在提高了 ReL4 项目中异步进程间通信的性能，此研究成果可直接迁移至实际操作系统开发，以增强系统运行效率，降低资源消耗，进而提升用户交互体验。
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[]{images/bit_logo.png}
-  \caption{标题序号}\label{标题序号} % label 用来在文中索引
-\end{figure}
+在安全性及可靠性增强方面，本研究通过降低特权级切换频率，不仅优化了操作系统性能，亦提升了系统的安全性和可靠性。此优化对于安全关键领域，如航空航天、军事、医疗等，具有尤为重要的意义，有助于确保这些领域信息系统的安全稳定。
 
-\textcolor{blue}{\underline{\underline{表-示例：（阅后删除此段）}}}
-% 三线表
-\begin{table}[htbp]
-  \centering
-  \caption{统计表}\label{统计表}
-  \begin{tabular}{*{5}{>{\centering\arraybackslash}p{2cm}}} \toprule
-    项目    & 产量    & 销量    & 产值   & 比重    \\ \midrule
-    手机    & 1000  & 10000 & 500  & 50\%  \\
-    计算机   & 5500  & 5000  & 220  & 22\%  \\
-    笔记本电脑 & 1100  & 1000  & 280  & 28\%  \\ \midrule
-    合计    & 17600 & 16000 & 1000 & 100\% \\ \bottomrule
-  \end{tabular}
-\end{table}
+在技术应用与产业推动层面，本研究为微内核操作系统开发者提供了切实可行的技术路线，推动了微内核技术在多核处理器环境下的广泛应用。同时，本研究对于硬件加速技术的应用具有典范作用，有助于促进相关产业的技术进步和创新。
 
-\textcolor{blue}{公式标注应于该公式所在行的最右侧。对于较长的公式只可在符号处（+、-、*、/、$\leqslant$ $\geqslant$ 等）转行。在文中引用公式时，在标号前加“式”，如式（1-2）。阅后删除此
-  段。}
+此外，本研究促进了操作系统与硬件设计、并发编程等领域的深度融合，为跨学科研究提供了新的研究路径和方法论。这对于促进计算机科学与其他工程学科的技术融合，具有重要的学术价值和实践意义。
 
-\textcolor{blue}{公式-示例：（阅后删除此段）}
-% 公式上下不要空行，置于同一个段落下即可，否则上下距离会出现高度不一致的问题
-\begin{equation}
-  LRI=1\ ∕\ \sqrt{1+{\left(\frac{{\mu }_{R}}{{\mu }_{s}}\right)}^{2}{\left(\frac{{\delta }_{R}}{{\delta }_{s}}\right)}^{2}}
-\end{equation}
+\section{国内外研究现状}
 
+目前，国内在硬件调度器领域已经有了一些进展。如关沫张晓宇采用 VHDL 语言设计了适
+用于硬件化的实时操作系统调度器,基于 FPGA 使用组合电路和时序电路完成了系统内核调度
+器的搭建。
+国外学者 Y.Klimiankou 提出了一种提出了 Micro-CLK，一种基于微内核的多服务器操作
+系统设计，其核心思想是将进程间通信从内核中移除，从而提高效率并简化内核设计。进程间
+通信的优化成为微内核性能优化的重点。
+目前的研究工作虽然在不同领域取得了进展，但没有将硬件调度器与异步的进程间通信与
+异步的系统调用结合的实例。
 
-\section{字体效果表格}
+\section{研究内容和研究方法}
 
-% 列：Regular、Italic、Bold、Bold Italic
-% 行：宋体、黑体、楷体、Serif、Sans Serif、Typewriter、Math
+本研究将围绕以下几个核心环节展开：
+首先，本研究将对 Rel4 内核中的用户态异步运行时机制以及 TAIC 硬件调度器的设计理
+念与具体实现进行详尽剖析，将深入挖掘其工作原理、性能特点以及接口设计，为后续的优化
+与改进提供理论基础。
+其次，将着手进行硬件适配的异步运行时的体系结构设计与编码，主要包含以下工作：
+a. 将内核中异步运行时的队列改为 taic 实现，以适应异步系统调用。
+b. 将异步系统调用的库函数实现由系统调用改为读写 taic。
+c. 将异步系统调用回复时的用户态中断改为读写 taic，唤醒用户态对应的协程。
+接下来，将在 Qemu 模拟器和 FPGA 硬件环境两种不同的平台上进行仿真与测试，以确保
+我们的异步运行时能够在多种场景下稳定运行。主要测试内容包括：
+a. 对改进前后的异步 ipc 和异步系统调用在不同并发度下进行测试。
+b. 对改进前后的异步 ipc 和异步系统调用低并发下不同环节的时间消耗进行测试。
+最后，我将对仿真与测试的结果进行全面评估与分析，针对发现的问题进行调优。通过这
+一系列的优化措施，旨在提升异步系统调用的性能，使其更好地适应各种应用场景。
 
-\begin{table}[htb]
-  \centering
-  \caption{字体效果表格}
-  \begin{tabular}{@{}lllll@{}}
-    \toprule
-                        & Regular                               & Bold                             & Italic                 & Bold Italic                                       \\ \midrule
-    宋体                  & 宋体                                    & \colorbox{orange}{\textbf{宋体粗体}} & \textit{楷体}            & \colorbox{gray}{\textbf{\textit{楷书粗斜体}}}          \\
-    黑体                  & {\heiti{}黑体}                          & \textbf{\heiti{}黑体粗体}            & \textit{\heiti{}黑体斜体}  & \colorbox{gray}{\textit{\textbf{\heiti{}黑体粗斜体}}}  \\
-    楷体                  & {\kaishu{}楷书}                         & \textbf{\kaishu{}楷书粗体}           & \textit{\kaishu{}斜体楷体} & \colorbox{gray}{\textbf{\textit{\kaishu{}楷书粗斜体}}} \\
-    Serif(Roman/Normal) & Regular                               & \textbf{Bold}                    & \textit{Italic}        & \textbf{\textit{Bold Italic}}                     \\
-    Sans Serif          & \textsf{Regular}                      & \textbf{\textsf{Bold}}           & \textit{\textsf{Bold}} & \textbf{\textit{\textsf{Bold}}}                   \\
-    % 有些字体缺少特定变体，LaTeX会抛出警告，同时尽量替换为相近变体。
-    % 若编译结果能接受，可忽略之。
-    % 例如此处Typewriter代表的Latin Modern Sans Typewriter（lmtt）字体没有bold extended italic（bx/it）变体，
-    % 所以`\textbf{\textit{\texttt{…}}}`会被替换为bold slant（b/sl）变体，并引发如下警告。（其中TU指字体编码）
-    % Font shape `TU/lmtt/bx/it' in size <…> not available. Font shape `TU/lmtt/b/sl' tried instead.
-    Typewriter          & \texttt{Regular}                      & \textbf{\texttt{Bold}}           & \textit{\texttt{Bold}} & \textbf{\textit{\texttt{Bold}}}                   \\
-    Math                & $\mathnormal{Regular} \mathrm{Roman}$ & $\mathbf{Bold}$                  & $\mathit{Italic}$      & $\mathbf{\mathit{Bold Italic}}$                   \\ \bottomrule
-  \end{tabular}
-\end{table}
+\section{论文结构安排}
 
-\begin{itemize}[nosep]
-  \item \colorbox{orange}{宋体粗体}在 Windows 下会成为黑体。这是因为 Windows 的中易宋体没有粗体字重而进行的妥协。
-        如果想要获得宋体粗体的样式，请在配置中开启伪粗体选项。
-  \item \colorbox{gray}{粗斜体}的效果是因操作系统字体而定的，中文写作中不会使用这种字形，可以忽略。
-\end{itemize}
+\section{本章小结}
 
-\textit{有关公式与上下文间距的一些注意事项：请保证源码中的公式的环境（如}
-\\ \verb|\begin{equation}|
-\textit{）与上一段落不要有空行。否则，公式和上文段落之间会有额外的空白。}
-
-
-\section{常见问题和疑难解答}
-
-如果您遇到\href{https://bithesis.bitnp.net/faq/char-missing.html}{生僻字无法显示}、
-\href{https://bithesis.bitnp.net/faq/enumitem-nosep.html}{列表项间距过大}、
-\href{https://bithesis.bitnp.net/faq/longtable.html}{三线表需要跨页}等问题，
-请参考\textcolor{magenta}{\href{https://bithesis.bitnp.net/faq/}{在线文档的「疑难杂症」部分}}。
