@@ -1,0 +1,44 @@
+@startuml
+
+skinparam ParticipantPadding 80
+
+participant 用户线程
+participant TAIC接口
+participant TAIC硬件
+participant 异步运行时
+participant 内核
+
+== 初始化阶段 ==
+
+用户线程 -> 异步运行时: 初始化异步运行时
+
+用户线程 -> TAIC接口: 初始化TAIC
+
+TAIC接口 -> 内核: 映射寄存器到用户态地址空间
+
+== 能力分配与资源初始化 ==
+
+用户线程 -> 用户线程: 分配请求通知能力
+
+用户线程 -> TAIC接口: alloc_receiver 分配接收队列
+
+TAIC接口 -> 内核 : 申请唯一全局索引
+
+TAIC接口 -> TAIC硬件 : 请求分配就绪队列
+
+TAIC接口 -> 异步运行时 : 绑定就绪全局队列
+
+用户线程 -> 用户线程: 初始化异步通信缓冲区
+
+用户线程 -> 内核: 注册缓冲区用于异步系统调用
+
+内核 -> 内核: 完成注册相关初始化
+
+== 注册与协程生成 ==
+
+用户线程 -> 内核: 发起异步系统调用注册
+
+用户线程 -> TAIC接口: register_sender 注册为发送者
+
+用户线程 -> 异步运行时: 生成分发协程
+@enduml

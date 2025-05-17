@@ -1,142 +1,196 @@
-%%
-% The BIThesis Template for Bachelor Graduation Thesis
-%
-% 北京理工大学毕业设计（论文）参考文献管理 —— 使用 XeLaTeX 编译
-%
-% Copyright 2020-2023 BITNP
-%
-% This work may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either version 1.3
-% of this license or (at your option) any later version.
-% The latest version of this license is in
-%   https://www.latex-project.org/lppl.txt
-% and version 1.3 or later is part of all distributions of LaTeX
-% version 2005/12/01 or later.
-%
-% This work has the LPPL maintenance status `maintained'.
-%
-% The Current Maintainer of this work is Feng Kaiyu.
-%
-% Compile with: xelatex -> biber -> xelatex -> xelatex
+% 微内核边缘计算，分布式优势
+@inproceedings{nandy2024resource,
+  title     = {Resource Optimization in Edge Through Microkernel Architecture},
+  author    = {Nandy, Koushik and Sumukh, S M and Bhadauria, Abhishek and others},
+  booktitle = {2024 IEEE 21st International Conference on Ubiquitous Computing and Communications (IUCC)},
+  year      = {2024},
+  publisher = {IEEE},
+  doi       = {10.1109/IUCC60455.2024.10628249},
+  url       = {https://ieeexplore.ieee.org/document/10628249}
+}
 
-@article{yuFeiJiZongTiDuoXueKeSheJiYouHuaDeXianZhuangYuFaZhanFangXiang2008,
-  title = {飞机总体多学科设计优化的现状与发展方向},
-  author = {余, 雄庆},
-  date = {2008},
-  journaltitle = {南京航空航天大学学报},
-  pages = {417--426},
-  issn = {1005-2615},
-  url = {https://kns.cnki.net/kcms/detail/detail.aspx?filename=NJHK200804000&dbcode=CJFQ&dbname=CJFD2008&v=},
-  urldate = {2020-02-29},
-  keywords = {aircraft design,multidisciplinary design optimization,optimization,优化,多学科设计优化,飞行器设计},
-  langid = {中文;},
-  number = {04}
+% 
+@article{heiser2016l4,
+  title     = {L4 microkernels: The lessons from 20 years of research and deployment},
+  author    = {Heiser, Gernot and Elphinstone, Kevin},
+  journal   = {ACM Transactions on Computer Systems (TOCS)},
+  volume    = {34},
+  number    = {1},
+  pages     = {1--29},
+  year      = {2016},
+  publisher = {ACM},
+  doi       = {10.1145/2893177},
+  url       = {https://dl.acm.org/doi/10.1145/2893177}
 }
-@article{Hajela2012Application,
-  title={Application of Global Sensitivity Equations in Multidisciplinary Aircraft Synthesis},
-  author={Hajela, P. and Bloebaum, C. L. and Sobieszczanski-Sobieski, Jaroslaw},
-  journal={Journal of Aircraft},
-  volume={27},
-  number={12},
-  pages = {1002-110},
-  year={1990},
+
+% 最小化原则
+@inproceedings{heiser2013from,
+  title     = {From L3 to seL4: What have we learnt?},
+  author    = {Elphinstone, Kevin and Heiser, Gernot},
+  booktitle = {Proceedings of the 24th ACM Symposium on Operating Systems Principles},
+  pages     = {3--14},
+  year      = {2013},
+  publisher = {ACM},
+  doi       = {10.1145/2517349.2522720},
+  url       = {https://dl.acm.org/doi/10.1145/2517349.2522720}
 }
-@book{张伯伟2002全唐五代诗格会考,
-  title={全唐五代诗格会考},
-  author={张伯伟},
-  publisher={江苏古籍出版社},
-  location={南京},
-  year={2002},
-  language={zh},
-  keywords={book},
+
+% seL4的广阔前景 
+@inproceedings{heiser2024lionsos,
+  title     = {Lions OS: Towards a Truly Dependable Operating System},
+  author    = {Heiser, Gernot},
+  booktitle = {Proceedings of the 2024 IEEE/IFIP International Conference on Dependable Systems and Networks (DSN)},
+  year      = {2024},
+  url       = {https://dsn2024uq.github.io/Proceedings/pdfs/DSN2024-6rvE3SSpzFYmysif75Dkid/410500z023/410500z023.pdf}
 }
-@book{OBRIEN1994Aircraft,
-  title={Introduction to information systems},
-  author={O'BRIEN, James A},
-  location={$\text{7}^\text{th}$ ed. Burr Ridge, III},
-  publisher={Irwin},
-  year={1994},
-  keywords={book},
+
+% 同步IPC在高并发下，延迟问题
+@inproceedings{mergendahl2022thundering,
+  author    = {Stephen Mergendahl and Simon Jero and Bryan C. Ward and Gabriel Parmer},
+  title     = {The Thundering Herd: Amplifying Kernel Interference to Attack Response Times},
+  booktitle = {2022 IEEE 28th Real-Time and Embedded Technology and Applications Symposium (RTAS)},
+  year      = {2022},
+  pages     = {14--26},
+  publisher = {IEEE},
+  doi       = {10.1109/RTAS54340.2022.00009},
+  url       = {https://faculty.cs.gwu.edu/gparmer/publications/rtas22sel4_attacks.pdf}
 }
-@proceedings{雷光春2012,
-    author = {雷光春},
-    title = {综合湿地管理: 综合湿地管理国际研讨会论文集},
-    location = {北京},
-    publisher = {海洋出版社},
-    year = {2012},
+
+@online{rel4_kernel,
+  author       = {rel4team},
+  title        = {rel4\_kernel},
+  date         = {2025-05-16},
+  url          = {https://github.com/rel4team/rel4_kernel},
+  urldate      = {2025-05-16},
+  organization = {rel4team},
+  note         = {A kernel-related project on GitHub}
 }
-@inbook{白书农,
-  title={植物开花研究},
-  author={白书农},
-  location = {北京},
-  publisher={高等教育出版社},
-  year={1998},
-  pages = {146-163},
-  editor = {李承森},
-  booktitle = {植物科学进展},
+
+@inproceedings{reichmann2015ipcperformance,
+  author    = {Stefan Reichmann},
+  title     = {Improvement of IPC Responsiveness in Microkernel-Based Operating Systems},
+  booktitle = {Proceedings of the Workshop on Advanced Microkernel Operating Systems (WAMOS)},
+  year      = {2015},
+  pages     = {20--27},
+  url       = {https://www.cs.hs-rm.de/~kaiser/events/wamos2015/wamos15-proceedings.pdf#page=20}
 }
-@phdthesis{zhanghesheng,
-  author = {张和生},
-  title = {嵌入式单片机系统设计},
-  location = {北京},
-  school = {北京理工大学},
-  year = {1998},
-  language={zh},
-  keywords={thesis},
+
+
+@inproceedings{varanasi2010okl4,
+  author    = {P. Varanasi and B. Leslie},
+  title     = {The OKL4 Microvisor: Convergence Point of Microkernels and Hypervisors},
+  booktitle = {Proceedings of the 1st Asia-Pacific Workshop on Systems (APSys)},
+  year      = {2010},
+  pages     = {19--24},
+  publisher = {ACM},
+  doi       = {10.1145/1851276.1851282},
+  url       = {https://dl.acm.org/doi/10.1145/1851276.1851282}
 }
-@phdthesis{Sobieski,
-  author = {Sobieski, I. P.},
-  title = {Multidisciplinary Design Using Collaborative Optimization},
-  location = {United States -- California},
-  school = {Stanford University},
-  year = {1998},
-  keywords={thesis},
+
+@article{2011Communication,
+  title   = {Communication in Microkernel-Based Operating Systems},
+  author  = { Aigner, Ronald },
+  journal = {Wiley Publishing, Inc.},
+  year    = {2011}
 }
-@techreport{fengxiqiao,
-  author = {冯西桥},
-  title = {核反应堆压力容器的LBB分析},
-  address = {北京},
-  institution = {清华大学核能技术设计研究院},
-  year = {1997},
-  language={zh},
-  keywords={techreport},
+% 异步
+@inproceedings{wang2017efficient,
+  author    = {Rui Wang and Libin Xu and Yuebin Bai and Zhongzhao Wang and Hailong Yang and Lijun Zhang},
+  title     = {Efficient Asynchronous Communication between Virtual Machines in Embedded Systems},
+  booktitle = {2017 IEEE 19th International Conference on High Performance Computing and Communications; IEEE 15th International Conference on Smart City; IEEE 3rd International Conference on Data Science and Systems (HPCC/SmartCity/DSS)},
+  pages     = {603--604},
+  year      = {2017},
+  publisher = {IEEE},
+  doi       = {10.1109/HPCC-SmartCity-DSS.2017.78},
+  url       = {https://doi.org/10.1109/HPCC-SmartCity-DSS.2017.78}
 }
-@techreport{Sobieszczanski,
-  author = {Sobieszczanski-Sobieski, J.},
-  title = {Optimization by Decomposition: A Step from Hierarchic to Non-Hierarchic Systems},
-  institution = {NASA CP-3031},
-  year = {1989},
-  keywords={techreport},
+
+% micro clk
+@inproceedings{Klimiankou2021microclk,
+  author    = {Klimiankou, Yauhen},
+  title     = {Micro-CLK: returning to the asynchronicity with communication-less microkernel},
+  year      = {2021},
+  isbn      = {9781450386982},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/3476886.3477521},
+  doi       = {10.1145/3476886.3477521},
+  abstract  = {Inter-process communication (IPC) has always been the "Achilles heel" of microkernels, determining their overall performance. The entire history of microkernel development is tightly coupled to the debates about IPC, its efficiency, and the bottleneck it creates. The microkernel research community has consistently viewed the idea of message passing as the fundamental foundation of the microkernel, which is considered linked to its design inextricably.We are revising the place of IPC in the microkernel-based multi-server operating system design. We argue that communication can and potentially should be moved out to the userspace making microkernel the first tier resource manager solely. We describe a novel approach to out-of-kernel asynchronous messaging in multi-server microkernel OS and provide preliminary evaluation results to show its benefits.},
+  booktitle = {Proceedings of the 12th ACM SIGOPS Asia-Pacific Workshop on Systems},
+  pages     = {106–114},
+  numpages  = {9},
+  keywords  = {multi-server operating system, microkernel, inter-process communication, communication-less kernel, asynchronous message passing},
+  location  = {Hong Kong, China},
+  series    = {APSys '21}
 }
-@patent{jiangxizhou,
-  author = {姜锡洲},
-  title = {一种温热外敷药制备方案},
-  number = {881056078},
-  date = {1983-08-12},
+
+@inproceedings{2019SkyBridge,
+  title     = {SkyBridge: Fast and Secure Inter-Process Communication for Microkernels},
+  author    = { Mi, Zeyu  and  Li, Dingji  and  Yang, Zihan  and  Wang, Xinran  and  Chen, Haibo },
+  booktitle = {European Conference on Computer Systems},
+  year      = {2019}
 }
-@standard{GB/T3792.4-2009,
-  publisher ={中国标准出版社},
-  title={全国信息与文献标准化技术委员会. 文献著录: 第4部分$\,$非书资料: GB/T 3792.4-2009},
-  location = {北京},
-  year={2010},
-  language={zh},
-  pages = {3},
-  keywords={standard},
+
+% XPC
+
+@inproceedings{XPC2019,
+  author    = {Du, Dong and Hua, Zhichao and Xia, Yubin and Zang, Binyu and Chen, Haibo},
+  title     = {XPC: architectural support for secure and efficient cross process call},
+  year      = {2019},
+  isbn      = {9781450366694},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/3307650.3322218},
+  doi       = {10.1145/3307650.3322218},
+  abstract  = {Microkernel has many intriguing features like security, fault-tolerance, modularity and customizability, which recently stimulate a resurgent interest in both academia and industry (including seL4, QNX and Google's Fuchsia OS). However, IPC (inter-process communication), which is known as the Achilles' Heel of microkernels, is still the major factor for the overall (poor) OS performance. Besides, IPC also plays a vital role in monolithic kernels like Android Linux, as mobile applications frequently communicate with plenty of user-level services through IPC. Previous software optimizations of IPC usually cannot bypass the kernel which is responsible for domain switching and message copying/remapping; hardware solutions like tagged memory or capability replace page tables for isolation, but usually require non-trivial modification to existing software stack to adapt the new hardware primitives. In this paper, we propose a hardware-assisted OS primitive, XPC (Cross Process Call), for fast and secure synchronous IPC. XPC enables direct switch between IPC caller and callee without trapping into the kernel, and supports message passing across multiple processes through the invocation chain without copying. The primitive is compatible with the traditional address space based isolation mechanism and can be easily integrated into existing microkernels and monolithic kernels. We have implemented a prototype of XPC based on a Rocket RISC-V core with FPGA boards and ported two microkernel implementations, seL4 and Zircon, and one monolithic kernel implementation, Android Binder, for evaluation. We also implement XPC on GEM5 simulator to validate the generality. The result shows that XPC can reduce IPC call latency from 664 to 21 cycles, up to 54.2x improvement on Android Binder, and improve the performance of real-world applications on microkernels by 1.6x on Sqlite3 and 10x on an HTTP server with minimal hardware resource cost.},
+  booktitle = {Proceedings of the 46th International Symposium on Computer Architecture},
+  pages     = {671–684},
+  numpages  = {14},
+  keywords  = {accelerators, inter-process communication, microkernel, operating system},
+  location  = {Phoenix, Arizona},
+  series    = {ISCA '19}
 }
-@newspaper{xiexide,
-  author = {谢希德},
-  title={创造学习的思路},
-  date={1998-12-25},
-  number = {10},
-  journal = {人民日报},
-  keywords = {newspaper},
+
+@online{taic2024,
+  author       = {Fangliang Zhao},
+  title        = {TAIC},
+  year         = {2023},
+  url          = {https://github.com/taic-repo/taic},
+  note         = {Accessed: 2025-05-16},
+  organization = {taic-repo}
 }
-@online{yaoboyuan,
-  author = {姚伯元},
-  title = {毕业设计(论文)规范化管理与培养学生综合素质},
-  organization = {中国高等教育网教学研究},
-  date = {2005-02-02},
-  url     = {https://www.cnnic.net.cn/hlwfzyj/hlwxzbg/201201/P020120709345264469680},
-  urldate = {2013-03-26},
-  keywords = {online},
+
+@online{redoxdocs,
+  author = {{Redox OS Developers}},
+  title  = {Redox OS},
+  year   = {2015},
+  url    = {https://redox-os.org/},
+  note   = {访问于 2025年5月16日}
+}
+
+
+@inproceedings{Tockos,
+  author    = {Levy, Amit and Campbell, Bradford and Ghena, Branden and Giffin, Daniel B. and Pannuto, Pat and Dutta, Prabal and Levis, Philip},
+  title     = {Multiprogramming a 64kB Computer Safely and Efficiently},
+  year      = {2017},
+  isbn      = {9781450350853},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/3132747.3132786},
+  doi       = {10.1145/3132747.3132786},
+  abstract  = {Low-power microcontrollers lack some of the hardware features and memory resources that enable multiprogrammable systems. Accordingly, microcontroller-based operating systems have not provided important features like fault isolation, dynamic memory allocation, and flexible concurrency. However, an emerging class of embedded applications are software platforms, rather than single purpose devices, and need these multiprogramming features. Tock, a new operating system for low-power platforms, takes advantage of limited hardware-protection mechanisms as well as the type-safety features of the Rust programming language to provide a multiprogramming environment for microcontrollers. Tock isolates software faults, provides memory protection, and efficiently manages memory for dynamic application workloads written in any language. It achieves this while retaining the dependability requirements of long-running applications.},
+  booktitle = {Proceedings of the 26th Symposium on Operating Systems Principles},
+  pages     = {234–251},
+  numpages  = {18},
+  location  = {Shanghai, China},
+  series    = {SOSP '17}
+}
+
+@misc{linux-kernel-rust-docs,
+  author       = {{The Linux Kernel Organization}},
+  title        = {Rust Language Support in the Linux Kernel},
+  year         = 2023,
+  url          = {https://www.kernel.org/doc/html/latest/rust/index.html},
+  note         = {Accessed: 2025-05-16},
+  howpublished = {\url{https://www.kernel.org/doc/html/latest/rust/index.html}}
 }
