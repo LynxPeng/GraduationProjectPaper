@@ -2,7 +2,7 @@
 
 \section{Rust并发模型}
 
-Rust是一门强调并发性与安全性的系统编程语言，其凭借所有权系统、生命周期及智能指针等一系列机制可以在编译期保障系统的内存安全问题。标准Rust语言的性能与C或C++类似，其高效的并发模型和零成本抽象模式为异步编程提供了良好的环境。目前，Rust语言已被广泛应用于操作系统内核的开发中，如Redox OS\cite{redoxdocs}、Tock OS\cite{Tockos}。此外，Linux内核也开始引入Rust语言，用于编写部分新的内核驱动和模块，目的是提高安全性和可靠性\cite{linux-kernel-rust-docs}。
+Rust是一门强调并发性与安全性的系统编程语言，其凭借所有权系统、生命周期及智能指针等一系列机制可以在编译期保障系统的内存安全问题\cite{jung2020safe}。标准Rust语言的性能与C或C++类似，其高效的并发模型和零成本抽象模式为异步编程提供了良好的环境。目前，Rust语言已被广泛应用于操作系统内核的开发中，如Redox OS\cite{redoxdocs}、Tock OS\cite{Tockos}。此外，Linux内核也开始引入Rust语言，用于编写部分新的内核驱动和模块，目的是提高安全性和可靠性\cite{linux-kernel-rust-docs}。
 
 ReL4系统中使用Rust作为系统编程语言，并基于Rust的并发模型构建异步运行时，以实现内核与用户线程中的异步任务调度。
 
@@ -114,7 +114,7 @@ ReL4 系统引入了用户态中断机制（U-notification），通过实现控�
 
 由于ReL4内核中去除了同步IPC的支持，ReL4系统在用户态提供了异步运行时，该运行时提供了用于异步通信的共享缓冲区和协程调度器。
 
-为实现轻量化的异步通信，ReL4选用协程作为调度的基本单位。协程调度器整体实现框架如图\ref{Executor}所示。
+为实现轻量化的异步通信，ReL4选用协程作为调度的基本单位。协程调度器整体实现框架如图\ref{Executor}所示\cite{rel4_kernel}。
 
 \begin{figure}[htbp]
     \centering
@@ -166,7 +166,7 @@ TAIC的创新性体现在两个方面。首先，在状态管理机制上，TAIC
     \caption{TAIC系统架构图}\label{taicarch}
 \end{figure}
 
-图\ref{taicarch}给出了基于软硬协同的任务调度和中断响应系统整体架构\ref{taic2024}。TAIC由就绪队列、发送能力表、接收能力表和中断处理模块组成。就绪队列根据任务标识中与调度相关的属性维护任务标识的顺序，且直接支持负载均衡功能；发送能力表中记录了可以发送任务通知的发送方标识，而接收能力表中则记录了可以接收中断事件和任务通知的接收方任务标识。外部设备的中断信号连接到TAIC的中断处理模块中，软件通过总线与TAIC交互，通过软硬件交互接口使用TAIC的调度功能以及注册与中断事件和任务通知相关的能力，中断处理模块在收到中断或者任务通知信号时，会根据中断号或者通道号来检查对应的发送方能力表或者接收能力表，从而完成中断处理和任务通知。
+图\ref{taicarch}给出了基于软硬协同的任务调度和中断响应系统整体架构\cite{taic2024}。TAIC由就绪队列、发送能力表、接收能力表和中断处理模块组成。就绪队列根据任务标识中与调度相关的属性维护任务标识的顺序，且直接支持负载均衡功能；发送能力表中记录了可以发送任务通知的发送方标识，而接收能力表中则记录了可以接收中断事件和任务通知的接收方任务标识。外部设备的中断信号连接到TAIC的中断处理模块中，软件通过总线与TAIC交互，通过软硬件交互接口使用TAIC的调度功能以及注册与中断事件和任务通知相关的能力，中断处理模块在收到中断或者任务通知信号时，会根据中断号或者通道号来检查对应的发送方能力表或者接收能力表，从而完成中断处理和任务通知。\cite{taic2024}
 
 \subsection{驱动设计及使用方法}\label{sec:taicdriver}
 
@@ -176,6 +176,7 @@ taic\_driver中主要接口如表\ref{tab:taicdriver}所示。
 
 \begin{table}[htbp]
 \centering
+\caption{taic\_driver 中 \texttt{LocalQueue} 接口列表}
 \begin{tabular}{|l|p{10cm}|}
 \hline
 \textbf{函数名} & \textbf{说明} \\
@@ -197,9 +198,6 @@ taic\_driver中主要接口如表\ref{tab:taicdriver}所示。
 \texttt{register\_extintr} & 注册外部中断处理句柄。 \\
 \hline
 \end{tabular}
-\caption{taic\_driver 中 \texttt{LocalQueue} 接口列表}
-
-
 \label{tab:taicdriver}
 \end{table}
 

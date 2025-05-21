@@ -1,40 +1,18 @@
-%%
-% The BIThesis Template for Bachelor Graduation Thesis
-%
-% 北京理工大学毕业设计（论文）中英文摘要 —— 使用 XeLaTeX 编译
-%
-% Copyright 2020-2023 BITNP
-%
-% This work may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either version 1.3
-% of this license or (at your option) any later version.
-% The latest version of this license is in
-%   https://www.latex-project.org/lppl.txt
-% and version 1.3 or later is part of all distributions of LaTeX
-% version 2005/12/01 or later.
-%
-% This work has the LPPL maintenance status `maintained'.
-%
-% The Current Maintainer of this work is Feng Kaiyu.
-
 % 中英文摘要章节
 \begin{abstract}
-% 中文摘要正文从这里开始
-本文……。
 
-\textcolor{blue}{摘要正文选用模板中的样式所定义的“正文”，每段落首行缩进 2 个字符；或者手动设置成每段落首行缩进 2 个汉字，字体：宋体，字号：小四，行距：固定值 22 磅，间距：段前、段后均为 0 行。阅后删除此段。}
+随着微内核操作系统在安全关键领域的广泛应用，其进程间通信（IPC）机制的性能瓶颈逐渐成为系统扩展的关键制约因素。为解决seL4微内核中同步IPC在高并发和多核环境下的性能问题，ReL4系统引入异步运行时与用户态中断机制，初步实现了高并发环境下的系统吞吐率提升。然而在低并发场景中，ReL4异步系统调用表现出明显的性能劣化，主要由于频繁的上下文切换与中断处理开销难以被摊销。
 
-\textcolor{blue}{摘要是一篇具有独立性和完整性的短文，应概括而扼要地反映出本论文的主要内容。包括研究目的、研究方法、研究结果和结论等，特别要突出研究结果和结论。中文摘要力求语言精炼准确，本科生毕业设计（论文）摘要建议 300-500 字。摘要中不可出现参考文献、图、表、化学结构式、非公知公用的符号和术语。英文摘要与中文摘要的内容应一致。阅后删除此段。}
+通过对国内外研究现状的分析，本文针对该问题提出一种基于TAIC（任务感知中断控制器）的异步系统调用优化方案。该方案通过引入硬件加速异步任务调度，避免了传统实现中的特权级切换和中断触发操作，从根本上降低了异步系统调用的平均延迟。本文对该方案进行了编码实现并通过对比实验对该方案进行验证。具体工作包括异步运行时中的硬件适配、中断向量的动态分配策略、缓冲区结构的适配优化以及功能正确性与性能测试。实验结果表明，该方案在保证功能正确性的情况下，对低并发场景下的平均系统调用响应时间有显著降低，在维持高并发性能优势的同时，提升了系统整体的响应能力与资源利用效率。
 
 \end{abstract}
 
-% 如需手动控制换行连字符位置，可写 aa\-bb，详见
-% https://bithesis.bitnp.net/faq/hyphen.html
 
 % 英文摘要章节
 \begin{abstractEn}
 % 英文摘要正文从这里开始
-In order to study……
+As microkernel-based operating systems are increasingly adopted in safety-critical domains, performance bottlenecks in inter-process communication (IPC) have become a key constraint on system scalability. To address the inefficiency of synchronous IPC in the seL4 microkernel under high-concurrency and multi-core environments, the ReL4 system introduces an asynchronous runtime and a user-level interrupt mechanism, achieving initial improvements in system throughput. However, in low-concurrency scenarios, ReL4’s asynchronous system calls suffer from notable performance degradation, primarily due to the high overhead of frequent context switches and interrupt handling, which cannot be effectively amortized.
 
-\textcolor{blue}{Abstract 正文设置成每段落首行缩进 2 字符，字体：Times New Roman，字号：小四，行距：固定值 22 磅，间距：段前、段后均为 0 行。阅后删除此段。}
+To tackle this issue, this thesis proposes an optimized asynchronous system call mechanism based on the Task-Aware Interrupt Controller (TAIC). By leveraging hardware accelerated asynchronous task scheduling, the proposed approach eliminates the need for privilege-level transitions and interrupt triggering operations found in conventional designs, thereby fundamentally reducing the average latency of asynchronous system calls. This work includes a full implementation of the proposed solution, with supporting contributions such as hardware adaptation in the asynchronous runtime, dynamic allocation strategies for interrupt vectors, optimized buffer structure integration, and comprehensive functional and performance testing. Experimental results show that the proposed scheme significantly reduces average system call response time in low-concurrency scenarios, while preserving the throughput advantages under high concurrency. Overall, it enhances system responsiveness and resource utilization efficiency.
+
 \end{abstractEn}

@@ -1,7 +1,7 @@
-\chapter{实现细节}
+\chapter{TAIC适配与异步系统调用实现细节}
 
 
-\section{接口层封装}
+\section{TAIC接口层封装}
 
 \subsection{中断向量分配器实现}
 
@@ -9,7 +9,7 @@
 
 由于硬件中存储了协程id与中断向量号的对应关系，因此软件接口只管理每个中断向量号的使用情况。本设计中，分配器基于32位位图实现。该位图提供基本的方法，如设置位、清除位和查询首个零位。
 
-其中为提高性能，查询首个零位使用Rust内建方法 \verb|trailing_zeros|。该方法返回最低有效零位的索引，在risc-v中可以被映射成CLZ等硬件指令。具体算法如\ref{alg:find_first_unset}所示。
+其中为提高性能，查询首个零位使用Rust内建方法 \verb|trailing_zeros|。该方法返回最低有效零位的索引，在risc-v中可以被映射成CLZ等硬件指令。具体算法如算法\ref{alg:find_first_unset}所示。
 
 % 查找第一个空闲位的算法
 
@@ -90,7 +90,7 @@
 
 缓冲区索引号的分配仅由用户态线程发起，而内核中的处理协程始终使用相同的索引号进行回复。因此，缓冲区的索引号总是由同一线程进行分配，具有天然的线程安全性。同时，两个环形队列的通过原子变量实现了并发访问控制，整个缓冲区在多线程环境下可实现无锁并发访问。该设计降低了因分配器引入导致的性能开销，使分配回收操作在极短的时间内即可完成，确保了高并发场景下的稳定性与效率。
 
-\section{执行器硬件适配}
+\section{执行器的TAIC适配}
 
 为了使异步运行时能够调用硬件能力，本设计对内核中异步运行时的执行器\texttt{Executor}中部分数据结构与方法进行了重写。
 
@@ -127,7 +127,7 @@
 
 协程首先应调用结构层的\texttt{alloc\_vec}函数尝试申请分配一个vec。若分配成功，则利用该vec，调用\texttt{register\_receiver}注册函数将本协程注册成消息的接受者。然后即可通过异步系统调用接口进行异步系统调用。在调用完成后，应释放分配的vec。
 
-该部分算法伪代码如\ref{client_call}：
+该部分算法伪代码如算法\ref{alg:client_call}：
 
 \begin{algorithm}
   \caption{Client Async SysCall}\label{alg:client_call}
@@ -238,9 +238,9 @@
 
 当缓冲区中所有消息都被处理完毕后，协程会调用\texttt{yield\_now}接口阻塞自身，等待唤醒。
 
-该部分算法的伪代码如算法\ref*{alg:async_syscall_handler}所示：
+该部分的伪代码如算法\ref*{alg:async_syscall_handler}所示：
 
-\begin{algorithm}[!h]
+\begin{algorithm}[h]
   \caption{异步系统调用处理协程 \texttt{async\_syscall\_handler}}\label{alg:async_syscall_handler}
 \begin{algorithmic}
 \Function{async\_syscall\_handler}{$process\_id$, $tcb$}

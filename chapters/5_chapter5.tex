@@ -4,10 +4,11 @@
 
 \section{测试环境与平台}
 
-本实验采用的宿主机环境如下表所示：
+本实验采用的宿主机环境如表\ref{tab:experiment-platform}所示
 
 \begin{table}[htbp]
 \centering
+\caption{宿主机环境配置}\label{tab:experiment-platform}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{|l|l|}
 \hline
@@ -20,15 +21,14 @@
 \textbf{内存大小} & 32 GB \\
 \hline
 \end{tabular}
-\caption{宿主机环境配置}
-\label{tab:experiment-platform}
 \end{table}
 
 
-本实验采用的虚拟机环境如下表所示:
+本实验采用的虚拟机环境如表\ref{tab:vmware-platform}所示
 
 \begin{table}[htbp]
 \centering
+\caption{虚拟机环境配置}\label{tab:vmware-platform}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{|l|l|}
 \hline
@@ -43,56 +43,50 @@
 虚拟机核心数与内存大小 & 4核心，8GB \\
 \hline
 \end{tabular}
-\caption{虚拟机环境配置}
-\label{tab:vmware-platform}
 \end{table}
 
-本实验在FPGA上对异步系统调用性能进行评估验证，开发板部分信息如下：
+本实验在FPGA上对异步系统调用性能进行评估验证，开发板型号为AXU15EG，RISC-V子系统的部分信息如表\ref{tab:fpga-info}
 
-% 表：开发板及FPGA型号信息
-\begin{table}[htbp]
+% 表：FPGA开发板及型号信息
+\begin{table}[!h]
 \centering
+\caption{FPGA开发板中RISC-V系统基本信息}\label{tab:fpga-info}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{|l|l|}
-\hline
-\textbf{开发板型号} & AXU15EG \\
-\hline
-\multicolumn{2}{|c|}{RISC-V系统参数} \\
 \hline
 核心数量 & 2核 \\
 \hline
 频率 & 100 MHz \\
 \hline
-BTB入口数量 & 40 \\
-\hline
+% BTB入口数量 & 40 \\
+% \hline
 L2缓存大小 & 2 MB \\
 \hline
 内存大小 & 2 GB \\
 \hline
 \end{tabular}
-\caption{FPGA 开发板基本信息}
-\label{tab:fpga-info}
 \end{table}
 
-\section{功能测试}
+\section{功能性测试}
 
 \subsection{TAIC调用测试}
 
 本测试用于测试将TAIC适配进系统并允许用户线程访问后，是否能正常使用全局队列的各项功能。测试模拟用户线程进行任务的入队出队操作。测试中，线程使用硬件调度器分配一个全局队列，然后将100个任务入队，再将100个任务出队。
 
+
 测试结果如图\ref{taictest}所示
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{images/TAICtest.png}
+  \includegraphics[width=\textwidth]{images/taic_test2.png}
   \caption{TAIC调用测试结果}\label{taictest}
 \end{figure}
 
-由结果可知，测试成功将100个队列入队并出队，测试结果与预期相符，说明用户线程使用硬件能力正常。
+由结果可知，测试成功将100个队列入队并出队，说明用户线程使用硬件能力正常。
 
 \subsection{缓冲区读写测试}
 
-本测试用于测试共享缓冲区的读写功能是否正常。测试模拟用户协程申请缓冲区索引并写入数据，内核服务协程从缓冲区读取数据并进行回复。测试时，用户协程向缓冲区写入字符串"message from usermode"，内核协程拿到数据后回复"message from kernel"。
+本测试用于测试共享缓冲区的读写功能是否正常。测试模拟用户协程申请缓冲区索引并写入数据，内核服务协程从缓冲区读取数据并进行回复。测试时，用户协程向缓冲区写入字符串\texttt{message from usermode}，内核协程拿到数据后回复\texttt{message from kernel}。
 
 测试结果如图\ref*{buffertest}所示
 
@@ -111,11 +105,11 @@ L2缓存大小 & 2 MB \\
 输出类系统调用测试用例如下：
 
 \begin{enumerate}
-  \item 调用 \texttt{PutChar} 异步系统调用输出一个字符 `'X'`。
-        预期结果： 控制台输出字符 `'X'`，并在日志中记录系统调用被调度。
+  \item 调用 \texttt{PutChar} 异步系统调用输出一个字符 \texttt{X}。
+        预期结果： 控制台输出字符X，并在日志中记录系统调用被调度。
 
-  \item 调用 \texttt{PutString} 异步系统调用输出字符串 `"11111"`。
-        预期结果： 控制台输出字符串 `"11111"`，日志显示异步系统调用调度信息。
+  \item 调用 \texttt{PutString} 异步系统调用输出字符串 \texttt{11111}。
+        预期结果： 控制台输出字符串 \texttt{11111}，日志显示异步系统调用调度信息。
   \item 调用 \texttt{RISC-VGetPageAddress} 异步系统调用获取目标虚拟地址 \texttt{vaddr} 所在页帧的物理地址，并通过日志输出。\\
         预期结果：日志记录异步系统调用触发，并显示页帧的物理地址，物理地址应与同步调用结果一致
 \end{enumerate}
@@ -164,6 +158,30 @@ L2缓存大小 & 2 MB \\
 
 测试结果如图\ref{memtest}所示。由结果可知，异步系统调用的内存映射功能正常，日志记录了异步系统调用的触发信息。测试结果与预期一致。
 
+\section{两种中断注册机制的对比}\label{sec:regintctest}
+
+为验证TAIC两种注册机制对异步性能的影响，本实验为两种实现方式进行了对比实验，分别测试在一次性注册与持续性注册下异步系统调用的平均用时。
+
+测试结果如图\ref{中断向量注册机制对比测试结果}。
+
+
+
+\begin{figure}[htbp]
+  \centering
+  \includesvg[inkscapelatex=false,width=0.8\textwidth]{images/taiccompare}
+  \caption{中断向量注册机制对比测试结果}\label{中断向量注册机制对比测试结果}
+\end{figure}
+
+实验结果显示，两种中断注册机制在系统调用性能方面存在显著差异，其中持续性注册机制在所有并发条件下均表现出更优的性能。特别是在高并发环境下，持续性注册机制的优势更加明显，其平均系统调用用时显著低于单次注册机制。
+
+随着并发度的提升，单次注册机制的平均调用用时呈现持续上升趋势，而持续性注册机制逐渐减小，在并发度4以上时，单次注册机制的平均系统调用延迟迅速上升，远高于持续性注册方式。
+
+造成此现象的原因是，两种机制对taic中接受方注册的方式不同。单次注册机制在每次阻塞前均注册一次信号接收。这种实现虽然较为通用，但为了避免内核与用户态线程同时读写硬件寄存器而造成冲突，硬件接口层需对相关函数添加互斥锁进行保护。该互斥锁在低并发下影响较低，但在高并发场景中有较显著的性能影响。随着并发线程数的增加，频繁的争用互斥锁会导致CPU大部分时间在无意义的等待中。
+
+而持续性注册机制在异步系统调用注册时就完成了接收方的注册，并保持注册状态。该方法下整个线程运行期间,内核无需再次进行注册操作，省去了互斥锁操作的时间成本。该机制避免了高并发情况下的冲突问题，使得优化后的异步运行时在高并发下仍有较低开销。
+
+综上所述，在本设计中，持续性中断注册机制具有更好的性能表现，尤其在高并发场景下优势更为明显。因此，本设计最终采用持续性注册机制作为默认实现，以充分发挥硬件调度器在异步系统调用中的优势。
+
 \section{性能测试}
 
 \subsection{测试对象说明}
@@ -199,7 +217,8 @@ L2缓存大小 & 2 MB \\
 
 \begin{figure}[htbp]
   \centering
-  \includesvg[inkscapelatex=false,width=\textwidth]{images/syscall_test}
+    % \includepdf[fitpaper]{images/syscall_test.pdf}
+  \includesvg[inkscapelatex=false,width=\textwidth]{images/syscall_test_zn}
   \caption{异步系统调用性能测试结果}\label{性能测试结果}
 \end{figure}
 
@@ -231,28 +250,12 @@ L2缓存大小 & 2 MB \\
 
 造成这一现象的主要原因是，随着并发度的增加，用户态线程发起系统调用的整体速率提高，导致内核中协程的处理量增加。内核中的处理协程进入较长时间的持续运行状态，使得大多数系统调用请求可以被协程直接响应，无需阻塞或等待唤醒，从而显著减少了主动唤醒的次数。
 
-\section{两种中断注册机制的对比}\label{sec:regintctest}
-
-为验证TAIC两种注册机制对异步性能的影响，本实验为两种实现方式进行了对比实验，分别测试在一次性注册与持续性注册下异步系统调用的平均用时。
-
-测试结果如图\ref{中断向量注册机制对比测试结果}。
-
-\begin{figure}[htbp]
-  \centering
-  \includesvg[inkscapelatex=false,width=0.8\textwidth]{images/taiccompare}
-  \caption{中断向量注册机制对比测试结果}\label{中断向量注册机制对比测试结果}
-\end{figure}
-
-实验结果显示，两种中断注册机制在系统调用性能方面存在显著差异，其中持续性注册机制在所有并发条件下均表现出更优的性能。特别是在高并发环境下，持续性注册机制的优势更加明显，其平均系统调用用时显著低于单次注册机制。
-
-随着并发度的提升，单次注册机制的平均调用用时呈现持续上升趋势，而持续性注册机制逐渐减小，在并发度4以上时，单次注册机制的平均系统调用延迟迅速上升，远高于持续性注册方式。
-
-造成此现象的原因是，两种机制对taic中接受方注册的方式不同。单次注册机制在每次阻塞前均注册一次信号接收。这种实现虽然较为通用，但为了避免内核与用户态线程同时读写硬件寄存器而造成冲突，硬件接口层需对相关函数添加互斥锁进行保护。该互斥锁在低并发下影响较低，但在高并发场景中有较显著的性能影响。随着并发线程数的增加，频繁的争用互斥锁会导致CPU大部分时间在无意义的等待中。
-
-而持续性注册机制在异步系统调用注册时就完成了接收方的注册，并保持注册状态。该方法下整个线程运行期间,内核无需再次进行注册操作，省去了互斥锁操作的时间成本。该机制避免了高并发情况下的冲突问题，使得优化后的异步运行时在高并发下仍有较低开销。
-
-综上所述，在本设计中，持续性中断注册机制具有更好的性能表现，尤其在高并发场景下优势更为明显。因此，本设计最终采用持续性注册机制作为默认实现，以充分发挥硬件调度器在异步系统调用中的优势。
-
 \section{本章小结}
 
-本章围绕基于TAIC优化的异步系统调用机制，详细介绍了功能测试与性能评估的全过程。功能测试表明，各类异步系统调用在引入硬件调度能力后均能正确运行。性能测试结果则显示，TAIC优化在不同并发度下均有效降低了系统调用的平均用时和陷入频率，尤其在低并发和多核场景中优势显著，相较原有ReL4系统具有明显性能提升。此外，通过对比不同中断注册机制的测试结果，也进一步验证了持续性注册在特定场景下的性能优势。
+本章围绕基于TAIC优化的异步系统调用机制，展开了一系列实验，从功能正确性、机制对比以及性能指标三个维度进行全面验证。
+
+功能测试中分别对TAIC硬件调用，缓冲区读写以及各类异步系统调用进行测试。测试结果现在，适配TAIC后，硬件能力调用正常，缓冲区读写正常，输出类，通知机制，内存映射类异步系统调用均能正确运行，证明了系统功能性正确。
+
+通过对比不同中断注册机制的测试结果，进一步验证了持续性注册在特定场景下的性能优势，最终将持续性注册机制作为默认实现。
+
+性能测试中，对内存映射与解除映射的异步系统调用，在不同并发度、不同核心下的平均用时和陷入频率进行了测试评估。测试结果显示，TAIC优化在不同并发度下均有效降低了系统调用的平均用时和陷入频率，尤其在低并发和多核场景中优势显著，相较原有ReL4系统具有明显性能提升。
