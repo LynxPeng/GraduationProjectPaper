@@ -25,15 +25,15 @@ await用于阻塞当前的异步函数，并等待一个Future完成。await的�
 
 \subsection{Rust的异步运行时}
 
-Rust的异步运行时围绕 Executor和Reactor设计。Executor是一个调度器，负责管理和调度异步任务的执行。Reactor是一个事件循环，负责等待IO事件的发生，并将事件通知到对应的异步任务。
-
-图\ref{asyncruntime}给出了异步运行时中Executor和Reactor的设计框架：
-
 \begin{figure}[htbp]
     \centering
-    \includesvg[inkscapelatex=false,width=0.85\textwidth]{images/async_runtime}
-    \caption{异步运行时设计框架}\label{asyncruntime}
+    \includesvg[inkscapelatex=false,width=0.8\textwidth]{images/async_runtime_v2}
+    \caption{Rust语言异步运行时框架图}\label{asyncruntime}
 \end{figure}
+
+Rust的异步运行时围绕 Executor和Reactor设计。Executor是一个调度器，负责管理和调度异步任务的执行。Reactor是一个事件循环，负责等待IO事件的发生，并将事件通知到对应的异步任务。
+
+图\ref{asyncruntime}给出了异步运行时中Executor和Reactor的结构框架：
 
 Executor是Rust异步编程模型中的一个重要组件，它负责管理future的执行，并提供运行时环境。
 Executor会提供异步任务所需的资源并使用一定的调度策略决定哪个异步任务被优先执行。在进行异步任务时，Executor会轮询future中的poll方法，直到所有future均执行完毕。
@@ -119,7 +119,7 @@ ReL4 系统引入了用户态中断机制（U-notification），通过实现控�
 \begin{figure}[htbp]
     \centering
     \includesvg[inkscapelatex=false,width=\textwidth]{images/executor}
-    \caption{协程调度器框架图}\label{Executor}
+    \caption{协程调度器结构示意图}\label{Executor}
 \end{figure}
 
 
@@ -133,7 +133,7 @@ ReL4 系统引入了用户态中断机制（U-notification），通过实现控�
 
 \begin{figure}[htbp]
     \centering
-    \includesvg[inkscapelatex=false,width=\textwidth]{images/async_ipc}
+    \includesvg[inkscapelatex=false,width=\textwidth]{images/async_ipc_v2}
     \caption{基于用户态中断的异步IPC}\label{asyncipc}
 \end{figure}
 
@@ -162,7 +162,7 @@ TAIC的创新性体现在两个方面。首先，在状态管理机制上，TAIC
 
 \begin{figure}[htbp]
     \centering
-    \includesvg[inkscapelatex=false,width=\textwidth]{images/taic_arch.svg}
+    \includesvg[inkscapelatex=false,width=\textwidth]{images/taic_arch_v2.svg}
     \caption{TAIC系统架构图}\label{taicarch}
 \end{figure}
 

@@ -1,9 +1,17 @@
-
 @startuml
-
 !theme materia-outline
 
 left to right direction
+
+skinparam class {
+    BackgroundColor white
+    BorderColor #214D7B
+}
+
+skinparam ArrowColor #233950
+skinparam DefaultTextAlignment center
+skinparam shadowing false
+skinparam ArrowThickness 2
 
 class Bitmap {
     - data: u32
@@ -24,5 +32,4 @@ class IrqAllocator {
 }
 
 IrqAllocator --> Bitmap : uses
-
 @enduml

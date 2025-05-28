@@ -17,6 +17,8 @@
   \caption{查找位图中首个零位}
   \label{alg:find_first_unset}
   \begin{algorithmic}
+    \Require input：bitmap（32位整数）
+    \Ensure output：首个零位的索引（从最低位开始计数），若无零位则返回None
     \Function{find\_first\_unset}{bitmap: 32-bit integer}
     \State $inverted \gets \sim bitmap$
     \If{$inverted = 0$}
@@ -28,15 +30,16 @@
   \end{algorithmic}
 \end{algorithm}
 
+该算法输入为一个32位整数，表示当前中断向量的使用情况。输出为首个未使用的中断向量号索引，若无可用向量则返回None。该算法首先对输入的位图进行按位取反，得到未使用的中断向量的位图。若该位图为0，则表示所有中断向量均已被使用，返回None。否则，使用Rust内建的\verb|trailing_zeros|方法查询最低有效零位的索引，并返回该索引作为可用中断向量号。
+
 分配器基于上述的位图结构进行封装，提供了初始化、分配、释放接口，实现类图如图\ref{中断向量分配器类图}。
 
 % 中断向量分配器类图
 \begin{figure}[htbp]
   \centering
-  \includesvg[inkscapelatex=false,width=0.8\textwidth]{images/IrqAllocator}
+  \includesvg[inkscapelatex=false,width=0.8\textwidth]{images/IrqAllocator_v2}
   \caption{中断向量分配器类图}\label{中断向量分配器类图}
 \end{figure}
-
 
 \subsection{硬件队列封装}
 
@@ -60,24 +63,26 @@
 
 \subsection{IPC消息字段修改}
 
-为了在通信时附带协程所申请的中断向量信息，本设计在\texttt{IPC\_Item}中新增了vec字段用于指示发送消息的协程的中断向量。若该字段为0，则表明该协程无中断向量，需通过\texttt{dispatcher}协程唤醒。
+为了在通信时附带协程所申请的中断向量信息，本设计在\texttt{IPC\_Item}中新增了vec字段用于指示发送消息的协程的中断向量。若该字段为0，则表明该协程无中断向量，需通过\texttt{dispatcher}协程唤醒。修改后的IPC\_Item结构如图\ref{ipc_item结构}。
 
 % ipcitem位域图
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.8\textwidth]{images/ipc_item.png}
-  \caption{ipcitem结构}\label{ipc_item结构}
+  \includesvg[inkscapelatex=false,width=\textwidth]{images/ipc_item}
+  \caption{IPC\_Item位域图}\label{ipc_item结构}
 \end{figure}
+
+
 
 \subsection{环形队列结构优化}
 
-依据\ref{sec:buffer}中的设计，缓冲区实现如图\ref{缓冲区类图}所示。
-
 \begin{figure}[htbp]
   \centering
-  \includesvg[inkscapelatex=false,width=\textwidth]{images/newbuffer}
+  \includesvg[inkscapelatex=false,width=0.9\textwidth]{images/newbuffer_v2}
   \caption{缓冲区类图}\label{缓冲区类图}
 \end{figure}
+
+依据\ref{sec:buffer}中的设计，缓冲区实现如图\ref{缓冲区类图}所示。
 
 缓冲区中\texttt{data}为数据区，由长度为4096的\texttt{ipc\_item}数组实现，用于存储调用时的传递消息。
 
@@ -130,7 +135,7 @@
 该部分算法伪代码如算法\ref{alg:client_call}：
 
 \begin{algorithm}
-  \caption{Client Async SysCall}\label{alg:client_call}
+  \caption{客户端异步系统调用请求}\label{alg:client_call}
   \begin{algorithmic}
     \Procedure{client\_call\_test}{sender\_id, msg}
     \State \textbf{unsafe}
@@ -143,7 +148,7 @@
     \State $0$
     \EndIf
     \For {$i = 0$ \textbf{to} ${call\_cnt} - 1$}
-    \State $reply \gets$ \Call{riscv\_Page\_Map}{vec, args} \Comment{await}
+    \State $reply \gets$ \Call{riscv\_Page\_Map}{vec, args} \Comment{异步等待}
     \If {$reply$ \textbf{is Ok}}
     \State \Call{cope}{$reply$}
     \Else
@@ -195,7 +200,7 @@
 该方法的伪代码如下所示：
 
 \begin{algorithm}
-  \caption{\texttt{sel4\_call\_with\_item(recv, vec, item)}}
+  \caption{异步过程调用发送函数}
   \begin{algorithmic}[0]  % 关闭行号
     \State buffer $\gets$ try get mutable buffer from \texttt{SENDER\_MAP[*recv]}
     \If{buffer is None}
@@ -264,7 +269,7 @@
             \EndIf
         \Else
             \State \Call{set\_recv\_req\_status}{$new\_buffer$, false}
-            \State \Call{yield\_now}{} \Comment{Block until next notification}
+            \State \Call{yield\_now}{} \Comment{阻塞等待通知}
         \EndIf
     \EndLoop
 \EndFunction

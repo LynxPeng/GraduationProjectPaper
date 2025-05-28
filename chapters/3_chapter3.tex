@@ -8,8 +8,8 @@
 
 \begin{figure}[htbp]
     \centering
-    \includesvg[inkscapelatex=false,width=\textwidth]{images/async_syscall}
-    \caption{异步系统调用流程}\label{asyncsyscall}
+    \includesvg[inkscapelatex=false,width=\textwidth]{images/async_syscall_v2}
+    \caption{ReL4中异步系统调用流程}\label{asyncsyscall}
 \end{figure}
 
 异步系统调用的发起需要用户态的异步运行时以及异步系统调用库函数的支持。发起异步系统调用的协程是一个由异步运行时所调度的异步协程。在该协程提交异步系统调用后，库函数会将请求写入缓冲区，然后根据缓冲区中的原子变量判断内核中的处理协程是否正在执行。若内核中的处理协程已经空闲阻塞，则进行系统调用来唤醒内核中的处理协程。此时，CPU会陷入内核对该内核任务进行调度，并尝试寻找一个空闲的内核发送核间中断以执行该处理任务。综上，异步系统调用的发起引入了异步任务调度所需的必要开销以及两次特权级切换所带来的上下文保存恢复开销。
@@ -27,7 +27,7 @@
 
 \begin{figure}[htbp]
     \centering
-    \includesvg[inkscapelatex=false,width=\textwidth]{images/taic_syscall}
+    \includesvg[inkscapelatex=false,width=\textwidth]{images/taic_syscall_v2}
     \caption{基于TAIC的异步系统调用架构设计}\label{taicsyscall}
 \end{figure}
 
@@ -101,7 +101,7 @@
 
 \begin{figure}[htbp]
     \centering
-    \includesvg[inkscapelatex=false,width=\textwidth]{images/buffer_arch}
+    \includesvg[inkscapelatex=false,width=0.8\textwidth]{images/buffer_arch_v2}
     \caption{缓冲区结构示意图}\label{bufferarch}
 \end{figure}
 
