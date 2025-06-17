@@ -33,7 +33,7 @@ await用于阻塞当前的异步函数，并等待一个Future完成。await的�
 
 Rust的异步运行时围绕 Executor和Reactor设计。Executor是一个调度器，负责管理和调度异步任务的执行。Reactor是一个事件循环，负责等待IO事件的发生，并将事件通知到对应的异步任务。
 
-图\ref{asyncruntime}给出了异步运行时中Executor和Reactor的结构框架：
+图\ref{asyncruntime}给出了异步运行时中Executor和Reactor的结构框架。
 
 Executor是Rust异步编程模型中的一个重要组件，它负责管理future的执行，并提供运行时环境。
 Executor会提供异步任务所需的资源并使用一定的调度策略决定哪个异步任务被优先执行。在进行异步任务时，Executor会轮询future中的poll方法，直到所有future均执行完毕。
@@ -54,7 +54,7 @@ ReL4可复用seL4的构建工具链，仅依赖其文件和部分配置项。在
 
 \subsection{能力机制与主要内核对象}
 
-ReL4采用与seL4相似的能力安全模型作为其访问控制体系。在该模型下，可被用户态线程使用的系统资源被抽象为内核对象。线程访问对应的内核对象需要具有相应的能力并提供能力句柄。ReL4中的主要内核对象包括：TCB、CSpace、VSpace、Notification、Endpoint、Untyped和Frame。
+ReL4采用与seL4相似的能力安全模型作为其访问控制体系。在该模型下，可被用户态线程使用的系统资源被抽象为内核对象。线程访问对应的内核对象需要具有相应的能力并提供能力句柄\cite{2008Verified}。ReL4中的主要内核对象包括：TCB、CSpace、VSpace、Notification、Endpoint、Untyped和Frame。
 
 
 TCB（Thread Control Block）是用于管理线程的核心内核对象，其中存储线程的控制信息，其中包含线程的寄存器快照以及上下文信息用于线程调度。TCB还负责维护与线程调度相关的字段，例如线程的优先级、线程状态等。此外，TCB中存有一系列能力槽，用于存储线程所持有的能力，包括线程的能力空间、虚拟内存空间、通知对象、端点对象和回复能力等。
